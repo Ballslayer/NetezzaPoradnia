@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "sqlmenager.h"
+
 #include <QMainWindow>
 #include <QtWidgets>
 #include <QSqlError>
@@ -25,7 +27,13 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    QStandardItemModel *model;
+    QStandardItemModel *modelPacjent;
+    QStandardItemModel *modelLekarz;
+    QStandardItemModel *modelLek;
+    QStandardItemModel *modelChoroba;
+    QStandardItemModel *modelDawkowanie;
+    QStandardItemModel *modelWizyta;
+    QStandardItemModel *modelInterakcja;
     QSqlTableModel *tModel;
 
 
@@ -37,6 +45,9 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QSqlDatabase db;
+
+    SQLMenager menager;
+
     void showError(const QSqlError &err);
     void setModelPacjent();
 };

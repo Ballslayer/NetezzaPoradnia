@@ -53,8 +53,12 @@ QSqlError initDatabase(QSqlDatabase &db) {
     db.setDatabaseName("NZSQL");
     db.setUserName("admin");
     db.setPassword("password");
-    if (!db.open()) qDebug() << "Can't connect with database.";
-    else return db.lastError();
+    if (!db.open()) {
+        qDebug() << "Can't connect with database." << db.lastError();
+        return db.lastError();
+    } else {
+        return QSqlError();
+    }
 
 
     //stworz tabele. Zakomentowane, bo w przypadku gdy juz sa tworzone to kolejne
@@ -85,6 +89,6 @@ QSqlError initDatabase(QSqlDatabase &db) {
     //db.close();
     //db = QSqlDatabase();
     //QSqlDatabase::removeDatabase(connectionName);
-    return QSqlError();
+
 }
 

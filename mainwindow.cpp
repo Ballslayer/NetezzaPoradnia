@@ -16,8 +16,9 @@ MainWindow::MainWindow(QWidget *parent) :
             qDebug() << "initError" << err;
             showError(err);
             return;
+        } else {
+        menager.initMenager(db);
         }
-
 
 //    QSqlQuery query;
 //    query.setForwardOnly(true);
@@ -40,7 +41,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
-    model = new QStandardItemModel(this);
+    modelPacjent = new QStandardItemModel(this);
+    modelLekarz = new QStandardItemModel(this);
+    modelLek = new QStandardItemModel(this);
+    modelChoroba = new QStandardItemModel(this);
+    modelDawkowanie = new QStandardItemModel(this);
+    modelInterakcja = new QStandardItemModel(this);
+    modelWizyta = new QStandardItemModel(this);
+
 //    tModel = new QSqlTableModel(this, db);
 
 //    tModel->setTable("PACJENT");
@@ -50,7 +58,15 @@ MainWindow::MainWindow(QWidget *parent) :
 //    tModel->fetchMore();
 //    ui->tableView_2->setModel(tModel);
     setModelPacjent(); //populate model from a query
-    ui->tableView->setModel(model);
+    ui->tableView->setModel(modelPacjent);
+    menager.setupModelLekarze(modelLekarz);
+    menager.setupModelLek(modelLek);
+    menager.setupModelChoroba(modelChoroba);
+    menager.setupModelDawkowanie(modelDawkowanie);
+    menager.setupModelInterakcja(modelInterakcja);
+    menager.setupModelWizyta(modelWizyta);
+
+
 }
 
 MainWindow::~MainWindow()
@@ -64,7 +80,7 @@ void MainWindow::showError(const QSqlError &err) {
 
 void MainWindow::setModelPacjent()
 {
-    model->clear();
+    modelPacjent->clear();
     QSqlQuery query;
      query.setForwardOnly(true);
     // WYSWIETLANIE
@@ -101,14 +117,14 @@ void MainWindow::setModelPacjent()
 
 
     }
-    model->appendColumn(listaItemow0);
-    model->appendColumn(listaItemow1);
-    model->appendColumn(listaItemow2);
-    model->appendColumn(listaItemow3);
-    model->setHeaderData(0, Qt::Horizontal, tr("Nr Ubezpieczenia"));
-    model->setHeaderData(1, Qt::Horizontal, tr("Imię i Nazwisko"));
-    model->setHeaderData(2, Qt::Horizontal, tr("Adres"));
-    model->setHeaderData(3, Qt::Horizontal, tr("Medium Kontaktu"));
+    modelPacjent->appendColumn(listaItemow0);
+    modelPacjent->appendColumn(listaItemow1);
+    modelPacjent->appendColumn(listaItemow2);
+    modelPacjent->appendColumn(listaItemow3);
+    modelPacjent->setHeaderData(0, Qt::Horizontal, tr("Nr Ubezpieczenia"));
+    modelPacjent->setHeaderData(1, Qt::Horizontal, tr("Imię i Nazwisko"));
+    modelPacjent->setHeaderData(2, Qt::Horizontal, tr("Adres"));
+    modelPacjent->setHeaderData(3, Qt::Horizontal, tr("Medium Kontaktu"));
 }
 
 void MainWindow::on_pushButton_clicked()
