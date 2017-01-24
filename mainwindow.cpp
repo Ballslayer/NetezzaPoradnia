@@ -4,6 +4,7 @@
 #include <QSqlQuery>
 #include "initdatabase.h"
 #include <QList>
+#include <QMapIterator>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -19,6 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
         } else {
         menager.initMenager(db);
         }
+
+    chorobaid = 0;
 
 //    QSqlQuery query;
 //    query.setForwardOnly(true);
@@ -38,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
-
+    connect(&menager,&SQLMenager::updateComboForChoroba,this,&MainWindow::updateComboChoroba);
 
 
     modelPacjent = new QStandardItemModel(this);
@@ -66,6 +69,9 @@ MainWindow::MainWindow(QWidget *parent) :
     menager.setupModelInterakcja(modelInterakcja);
     menager.setupModelWizyta(modelWizyta);
 
+    ui->tableView_2->setModel(modelLekarz);
+    ui->tableView_3->setModel(modelLek);
+
 
 }
 
@@ -73,6 +79,23 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+void MainWindow::updateComboChoroba(QMap<int, QString> &mapaChorob)
+{
+    ui->comboBoxChorobaDoKasowania->clear();
+    ui->comboBox_3chorobaDawkowanie->clear();
+    ui->comboBox_wizytaChoroba->clear();
+
+    int index = 0;
+    QMapIterator<int, QString> i(mapaChorob);
+    while (i.hasNext()) {
+        i.next();
+        ui->comboBoxChorobaDoKasowania->insertItem(index++,i.value(), QVariant(i.key()));
+        ui->comboBox_3chorobaDawkowanie->insertItem(index++,i.value(), QVariant(i.key()));
+        ui->comboBox_wizytaChoroba->insertItem(index++,i.value(), QVariant(i.key()));
+    }
+}
+
 void MainWindow::showError(const QSqlError &err) {
     QMessageBox::critical(this, "Unable to initialize Database",
                           "Error initializing database: " + err.text());
@@ -106,6 +129,7 @@ void MainWindow::setModelPacjent()
 ////        for(int i=0; i<5; i++){
 //            qDebug() <<  query.value(0).toString() <<  query.value(1).toString() <<  query.value(2).toString() <<  query.value(3).toString();
 ////        }
+
         item0 = new QStandardItem( query.value(0).toString());
         item1 = new QStandardItem( query.value(1).toString());
         item2 = new QStandardItem( query.value(2).toString());
@@ -149,11 +173,57 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_pushButton_2_clicked()
 {
     QSqlQuery query;
-    QString queryStr("DELETE FROM Przychodnia.pacjent WHERE nr_ubezpieczenia =  ");
+    QString queryStr("DELETE FROM PACJENT WHERE NR_UBEZPIECZENIA =  ");
     queryStr.append(ui->lineEdit->text());
     qDebug() << queryStr;
 
     if (!query.exec(queryStr))
          qDebug() <<  query.lastError();
     setModelPacjent();
+}
+
+void MainWindow::on_pushButton_dodajLekarza_clicked()
+{
+    menager.insertIntoLekarze(ui->lineEdit_lekarz_nr->text(),ui->lineEdit_lekarz_imieNazw->text(),ui->lineEdit_telefon->text());
+    menager.setupModelLekarze(modelLekarz);
+}
+
+void MainWindow::on_pushButton_kasujLekarza_clicked()
+{
+    menager.deleteFromLekarze(ui->lineEdit_lekarz_nr->text());
+    menager.setupModelLekarze(modelLekarz);
+}
+
+void MainWindow::on_pushButton_DodajLek_clicked()
+{
+    menager.insertIntoLek(ui->lineEdit_5kodleku->text(),ui->lineEdit_8nazwalieku->text());
+    menager.setupModelLek(modelLek);
+}
+
+void MainWindow::on_pushButton_KasujLek_clicked()
+{
+    menager.deleteFromLek(ui->lineEdit_5kodleku->text());
+    menager.setupModelLek(modelLek);
+}
+
+void MainWindow::on_pushButton_DodajLek_3_clicked()
+{
+    //gdy interakcja
+}
+
+void MainWindow::on_pushButton_KasujLek_3_clicked()
+{
+    //gdy interakcja
+}
+
+void MainWindow::on_pushButton_DodajChorobe_clicked()
+{
+    menager.insertIntoChoroba(QString::number(++chorobaid),ui->lineEdit_16nazwaChoroby->text(),ui->plainTextEditOpisChoroby->toPlainText(),ui->plainTextEditObjawyChoroby->toPlainText());
+    menager.setupModelChoroba(modelChoroba);
+}
+
+void MainWindow::on_pushButton_KasujChorobe_clicked()
+{
+    menager.deleteFromChoroba(ui->comboBoxChorobaDoKasowania->currentData().toString());
+    menager.setupModelChoroba(modelChoroba);
 }
