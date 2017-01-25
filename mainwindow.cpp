@@ -21,8 +21,6 @@ MainWindow::MainWindow(QWidget *parent) :
         menager.initMenager(db);
         }
 
-    chorobaid = 0;
-
 //    QSqlQuery query;
 //    query.setForwardOnly(true);
     // WYSWIETLANIE
@@ -42,7 +40,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     connect(&menager,&SQLMenager::updateComboForChoroba,this,&MainWindow::updateComboChoroba);
+    connect(&menager,&SQLMenager::updateComboForLekarz,this,&MainWindow::updateComboLekarz);
+    connect(&menager,&SQLMenager::updateComboForLek,this,&MainWindow::updateComboLek);
+    connect(this,&MainWindow::updateComboPacjentSig,this,&MainWindow::updateComboPacjent);
 
+    connect(&menager,&SQLMenager::updateChorobaId,this,&MainWindow::updateChorobaId);
+    connect(&menager,&SQLMenager::updateinterakcjaId,this,&MainWindow::updateinterakcjaId);
+    connect(&menager,&SQLMenager::updatedawkowanieId,this,&MainWindow::updatedawkowanieId);
+    connect(&menager,&SQLMenager::updatewizytaId,this,&MainWindow::updatewizytaId);
 
     modelPacjent = new QStandardItemModel(this);
     modelLekarz = new QStandardItemModel(this);
@@ -61,7 +66,6 @@ MainWindow::MainWindow(QWidget *parent) :
 //    tModel->fetchMore();
 //    ui->tableView_2->setModel(tModel);
     setModelPacjent(); //populate model from a query
-    ui->tableView->setModel(modelPacjent);
     menager.setupModelLekarze(modelLekarz);
     menager.setupModelLek(modelLek);
     menager.setupModelChoroba(modelChoroba);
@@ -69,8 +73,13 @@ MainWindow::MainWindow(QWidget *parent) :
     menager.setupModelInterakcja(modelInterakcja);
     menager.setupModelWizyta(modelWizyta);
 
+    ui->tableView->setModel(modelPacjent);
     ui->tableView_2->setModel(modelLekarz);
     ui->tableView_3->setModel(modelLek);
+    ui->tableView_4->setModel(modelInterakcja);
+    ui->tableView_5->setModel(modelChoroba);
+    ui->tableView_4dawka->setModel(modelDawkowanie);
+    ui->tableView_6wizyta->setModel(modelWizyta);
 
 
 }
@@ -80,20 +89,91 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::updateComboChoroba(QMap<int, QString> &mapaChorob)
+void MainWindow::updateComboPacjent(QMap<int, QString> &mapa)
+{
+    ui->comboBox_wizytaPacjent->clear();
+    QMapIterator<int, QString> i(mapa);
+    while (i.hasNext()) {
+        i.next();
+        ui->comboBox_wizytaPacjent->addItem(i.value(), QVariant(i.key()));
+    }
+}
+
+void MainWindow::updateComboLekarz(QMap<int, QString> &mapa)
+{
+    ui->comboBox_wizytaLekarz->clear();
+    QMapIterator<int, QString> i(mapa);
+    while (i.hasNext()) {
+        i.next();
+        ui->comboBox_wizytaLekarz->addItem(i.value(), QVariant(i.key()));
+    }
+
+}
+
+void MainWindow::updateComboLek(QMap<int, QString> &mapa)
+{
+    ui->comboBoxLekInterakcja->clear();
+    ui->comboBoxLekInterakcja_3->clear();
+    ui->comboBox_2lekDawkowanie->clear();
+    ui->comboBox_wizytaLek->clear();
+    ui->comboBox_wizytaLek_2->clear();
+    ui->comboBox_wizytaLek_3->clear();
+    ui->comboBox_wizytaLek_4->clear();
+
+    ui->comboBox_wizytaLek->addItem("", "");
+    ui->comboBox_wizytaLek_2->addItem("", "");
+    ui->comboBox_wizytaLek_3->addItem("", "");
+    ui->comboBox_wizytaLek_4->addItem("", "");
+
+    QMapIterator<int, QString> i(mapa);
+    while (i.hasNext()) {
+        i.next();
+        ui->comboBoxLekInterakcja->addItem(i.value(), QVariant(i.key()));
+        ui->comboBoxLekInterakcja_3->addItem(i.value(), QVariant(i.key()));
+        ui->comboBox_2lekDawkowanie->addItem(i.value(), QVariant(i.key()));
+        ui->comboBox_wizytaLek->addItem(i.value(), QVariant(i.key()));
+        ui->comboBox_wizytaLek_2->addItem(i.value(), QVariant(i.key()));
+        ui->comboBox_wizytaLek_3->addItem(i.value(), QVariant(i.key()));
+        ui->comboBox_wizytaLek_4->addItem(i.value(), QVariant(i.key()));
+    }
+}
+
+void MainWindow::updateComboChoroba(QMap<int, QString> &mapa)
 {
     ui->comboBoxChorobaDoKasowania->clear();
+    ui->comboBoxChorobaDoKasowania->addItem("", "");
     ui->comboBox_3chorobaDawkowanie->clear();
     ui->comboBox_wizytaChoroba->clear();
+    ui->comboBox_wizytaChoroba->addItem("", "");
 
     int index = 0;
-    QMapIterator<int, QString> i(mapaChorob);
+    QMapIterator<int, QString> i(mapa);
     while (i.hasNext()) {
         i.next();
         ui->comboBoxChorobaDoKasowania->insertItem(index++,i.value(), QVariant(i.key()));
         ui->comboBox_3chorobaDawkowanie->insertItem(index++,i.value(), QVariant(i.key()));
         ui->comboBox_wizytaChoroba->insertItem(index++,i.value(), QVariant(i.key()));
     }
+}
+
+void MainWindow::updateChorobaId(int id)
+{
+    chorobaid = id;
+}
+
+void MainWindow::updateinterakcjaId(int id)
+{
+    interakcjaId = id;
+}
+
+void MainWindow::updatedawkowanieId(int id)
+{
+    dawkowanieId = id;
+}
+
+void MainWindow::updatewizytaId(int id)
+{
+    wizytaId = id;
 }
 
 void MainWindow::showError(const QSqlError &err) {
@@ -123,13 +203,13 @@ void MainWindow::setModelPacjent()
     QStandardItem* item1;
     QStandardItem* item2;
     QStandardItem* item3;
-
+    mapaPacjentow.clear();
     while ( query.next()) {
 //         qDebug() << "----------";
 ////        for(int i=0; i<5; i++){
 //            qDebug() <<  query.value(0).toString() <<  query.value(1).toString() <<  query.value(2).toString() <<  query.value(3).toString();
 ////        }
-
+        mapaPacjentow.insert(query.value(0).toInt(),query.value(1).toString());
         item0 = new QStandardItem( query.value(0).toString());
         item1 = new QStandardItem( query.value(1).toString());
         item2 = new QStandardItem( query.value(2).toString());
@@ -149,6 +229,8 @@ void MainWindow::setModelPacjent()
     modelPacjent->setHeaderData(1, Qt::Horizontal, tr("Imię i Nazwisko"));
     modelPacjent->setHeaderData(2, Qt::Horizontal, tr("Adres"));
     modelPacjent->setHeaderData(3, Qt::Horizontal, tr("Medium Kontaktu"));
+
+    emit updateComboPacjentSig(mapaPacjentow);
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -209,10 +291,14 @@ void MainWindow::on_pushButton_KasujLek_clicked()
 void MainWindow::on_pushButton_DodajLek_3_clicked()
 {
     //gdy interakcja
+    menager.insertIntoInterakcja(QString::number(++interakcjaId),ui->comboBoxLekInterakcja_3->currentText(),ui->comboBoxLekInterakcja->currentText());
+    menager.setupModelInterakcja(modelInterakcja);
 }
 
 void MainWindow::on_pushButton_KasujLek_3_clicked()
 {
+    menager.deleteFromInterakcja(ui->lineEdit_5kodleku->text());
+    menager.setupModelInterakcja(modelInterakcja);
     //gdy interakcja
 }
 
@@ -226,4 +312,27 @@ void MainWindow::on_pushButton_KasujChorobe_clicked()
 {
     menager.deleteFromChoroba(ui->comboBoxChorobaDoKasowania->currentData().toString());
     menager.setupModelChoroba(modelChoroba);
+}
+
+void MainWindow::on_pushButton_4_clicked() // kasuj wizytę
+{
+    QMessageBox::warning(this,"Uwaga!!!","Kasowanie danych o wizytach tylko przez administratora aplikacji!!!");
+}
+
+void MainWindow::on_pushButton_3_clicked()  // dodaj wizytę
+{
+    menager.insertIntoWizyta(QString::number(++wizytaId),ui->dateEdit->text(),ui->comboBox_wizytaPacjent->currentData().toString(),ui->comboBox_wizytaLekarz->currentData().toString(),ui->comboBox_wizytaChoroba->currentData().toString(),ui->comboBox_wizytaLek->currentData().toString(),ui->comboBox_wizytaLek_2->currentData().toString(),ui->comboBox_wizytaLek_3->currentData().toString(),ui->comboBox_wizytaLek_4->currentData().toString());
+    menager.setupModelWizyta(modelWizyta);
+}
+
+void MainWindow::on_pushButton_DodajDawkowanie_clicked()
+{
+    menager.insertIntoDawkowanie(ui->comboBox_2lekDawkowanie->currentText(),ui->comboBox_3chorobaDawkowanie->currentText(),ui->lineEdit_11->text());
+    menager.setupModelDawkowanie(modelDawkowanie);
+}
+
+void MainWindow::on_pushButton_KasujDawkowanie_clicked()
+{
+    menager.deleteFromDawkowanie(ui->comboBox_2lekDawkowanie->currentText(),ui->comboBox_3chorobaDawkowanie->currentText());
+    menager.setupModelDawkowanie(modelDawkowanie);
 }

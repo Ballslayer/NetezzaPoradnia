@@ -36,9 +36,18 @@ public:
     QStandardItemModel *modelWizyta;
     QStandardItemModel *modelInterakcja;
     QSqlTableModel *tModel;
-
+signals:
+    void updateComboPacjentSig(QMap<int, QString> &);
 public slots:
-    void updateComboChoroba(QMap<int,QString> &);
+    void updateComboPacjent(QMap<int,QString> &);
+    void updateComboLekarz(QMap<int,QString> &);
+    void updateComboLek(QMap<int,QString> &);
+    void updateComboChoroba(QMap<int,QString> &mapa);
+
+    void updateChorobaId(int);
+    void updateinterakcjaId(int);
+    void updatedawkowanieId(int);
+    void updatewizytaId(int);
 
 private slots:
     void on_pushButton_clicked();
@@ -61,12 +70,25 @@ private slots:
 
     void on_pushButton_KasujChorobe_clicked();
 
+    void on_pushButton_4_clicked();
+
+    void on_pushButton_3_clicked();
+
+    void on_pushButton_DodajDawkowanie_clicked();
+
+    void on_pushButton_KasujDawkowanie_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSqlDatabase db;
 
     int chorobaid;
+    int interakcjaId;
+    int dawkowanieId;
+    int wizytaId;
+
     SQLMenager menager;
+    QMap<int,QString> mapaPacjentow;
 
     void showError(const QSqlError &err);
     void setModelPacjent();

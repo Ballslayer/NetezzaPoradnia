@@ -38,12 +38,14 @@ void SQLMenager::setupModelLekarze(QStandardItemModel *model)
     QStandardItem* item0;
     QStandardItem* item1;
     QStandardItem* item2;
-
+    mapaLekarzy.clear();
     while ( query.next()) {
 //         qDebug() << "----------";
 ////        for(int i=0; i<5; i++){
 //            qDebug() <<  query.value(0).toString() <<  query.value(1).toString() <<  query.value(2).toString() <<  query.value(3).toString();
 ////        }
+        mapaLekarzy.insert(query.value(0).toInt(), query.value(1).toString());
+
         item0 = new QStandardItem( query.value(0).toString());
         item1 = new QStandardItem( query.value(1).toString());
         item2 = new QStandardItem( query.value(2).toString());
@@ -59,6 +61,7 @@ void SQLMenager::setupModelLekarze(QStandardItemModel *model)
     model->setHeaderData(0, Qt::Horizontal, tr("Nr id"));
     model->setHeaderData(1, Qt::Horizontal, tr("Imię i Nazwisko"));
     model->setHeaderData(2, Qt::Horizontal, tr("Kontakt"));
+    emit updateComboForLekarz(mapaLekarzy);
 }
 
 void SQLMenager::setupModelLek(QStandardItemModel *model)
@@ -80,12 +83,14 @@ void SQLMenager::setupModelLek(QStandardItemModel *model)
 
     QStandardItem* item0;
     QStandardItem* item1;
-
+    mapaLekow.clear();
     while ( query.next()) {
 //         qDebug() << "----------";
 ////        for(int i=0; i<5; i++){
 //            qDebug() <<  query.value(0).toString() <<  query.value(1).toString() <<  query.value(2).toString() <<  query.value(3).toString();
 ////        }
+        mapaLekow.insert(query.value(0).toInt(), query.value(1).toString());
+
         item0 = new QStandardItem( query.value(0).toString());
         item1 = new QStandardItem( query.value(1).toString());
 
@@ -98,12 +103,13 @@ void SQLMenager::setupModelLek(QStandardItemModel *model)
 
     model->setHeaderData(0, Qt::Horizontal, tr("Kod leku"));
     model->setHeaderData(1, Qt::Horizontal, tr("Nazwa"));
-
+    emit updateComboForLek(mapaLekow);
 }
 
 void SQLMenager::setupModelChoroba(QStandardItemModel *model)
 {
     model->clear();
+    chorobaId = 0;
     QSqlQuery query;
      query.setForwardOnly(true);
     // WYSWIETLANIE
@@ -130,7 +136,7 @@ void SQLMenager::setupModelChoroba(QStandardItemModel *model)
 //            qDebug() <<  query.value(0).toString() <<  query.value(1).toString() <<  query.value(2).toString() <<  query.value(3).toString();
 ////        }
         int kandydatNaChorobaId = query.value(0).toInt();
-        if(kandydatNaChorobaId > chorobaid) chorobaid = kandydatNaChorobaId;
+        if(kandydatNaChorobaId > chorobaId) chorobaId = kandydatNaChorobaId;
         mapaChorob.insert(kandydatNaChorobaId, query.value(1).toString());
         item0 = new QStandardItem( query.value(0).toString());
         item1 = new QStandardItem( query.value(1).toString());
@@ -153,11 +159,13 @@ void SQLMenager::setupModelChoroba(QStandardItemModel *model)
     model->setHeaderData(3, Qt::Horizontal, tr("Opis"));
 
     emit updateComboForChoroba(mapaChorob);
+    emit updateChorobaId(chorobaId);
 }
 
 void SQLMenager::setupModelDawkowanie(QStandardItemModel *model)
 {
     model->clear();
+    dawkowanieId = 0;
     QSqlQuery query;
      query.setForwardOnly(true);
     // WYSWIETLANIE
@@ -183,6 +191,9 @@ void SQLMenager::setupModelDawkowanie(QStandardItemModel *model)
 ////        for(int i=0; i<5; i++){
 //            qDebug() <<  query.value(0).toString() <<  query.value(1).toString() <<  query.value(2).toString() <<  query.value(3).toString();
 ////        }
+        int kandydatNa = query.value(0).toInt();
+        if(kandydatNa > dawkowanieId) dawkowanieId = kandydatNa;
+
         item0 = new QStandardItem( query.value(0).toString());
         item1 = new QStandardItem( query.value(1).toString());
         item2 = new QStandardItem( query.value(2).toString());
@@ -202,11 +213,13 @@ void SQLMenager::setupModelDawkowanie(QStandardItemModel *model)
     model->setHeaderData(1, Qt::Horizontal, tr("Lek"));
     model->setHeaderData(2, Qt::Horizontal, tr("Choroba"));
     model->setHeaderData(3, Qt::Horizontal, tr("Dawka"));
+    updatedawkowanieId(dawkowanieId);
 }
 
 void SQLMenager::setupModelWizyta(QStandardItemModel *model)
 {
     model->clear();
+    wizytaId = 0;
     QSqlQuery query;
      query.setForwardOnly(true);
     // WYSWIETLANIE
@@ -242,6 +255,9 @@ void SQLMenager::setupModelWizyta(QStandardItemModel *model)
 ////        for(int i=0; i<5; i++){
 //            qDebug() <<  query.value(0).toString() <<  query.value(1).toString() <<  query.value(2).toString() <<  query.value(3).toString();
 ////        }
+        int kandydatNa = query.value(0).toInt();
+        if(kandydatNa > wizytaId) wizytaId = kandydatNa;
+
         item0 = new QStandardItem( query.value(0).toString());
         item1 = new QStandardItem( query.value(1).toString());
         item2 = new QStandardItem( query.value(2).toString());
@@ -281,11 +297,13 @@ void SQLMenager::setupModelWizyta(QStandardItemModel *model)
     model->setHeaderData(6, Qt::Horizontal, tr("drugi lek"));
     model->setHeaderData(7, Qt::Horizontal, tr("trzeci lek"));
     model->setHeaderData(8, Qt::Horizontal, tr("czwarty lek"));
+    emit updatewizytaId(wizytaId);
 }
 
 void SQLMenager::setupModelInterakcja(QStandardItemModel *model)
 {
     model->clear();
+    interakcjaId = 0;
     QSqlQuery query;
      query.setForwardOnly(true);
     // WYSWIETLANIE
@@ -309,6 +327,9 @@ void SQLMenager::setupModelInterakcja(QStandardItemModel *model)
 ////        for(int i=0; i<5; i++){
 //            qDebug() <<  query.value(0).toString() <<  query.value(1).toString() <<  query.value(2).toString() <<  query.value(3).toString();
 ////        }
+        int kandydatNa = query.value(0).toInt();
+        if(kandydatNa > interakcjaId) interakcjaId = kandydatNa;
+
         item0 = new QStandardItem( query.value(0).toString());
         item1 = new QStandardItem( query.value(1).toString());
         item2 = new QStandardItem( query.value(2).toString());
@@ -324,6 +345,7 @@ void SQLMenager::setupModelInterakcja(QStandardItemModel *model)
     model->setHeaderData(0, Qt::Horizontal, tr("Id"));
     model->setHeaderData(1, Qt::Horizontal, tr("Lek nr 1"));
     model->setHeaderData(2, Qt::Horizontal, tr("Lek nr 2"));
+    emit updateinterakcjaId(interakcjaId);
 }
 
 void SQLMenager::insertIntoLekarze(QString &id, QString &name, QString &tel)
@@ -374,13 +396,15 @@ void SQLMenager::insertIntoChoroba(QString &id, QString &nazwa, QString &opis, Q
          qDebug() <<  query.lastError();
 }
 
-void SQLMenager::insertIntoDawkowanie(QString &lekKod, QString &chorobaId, QString &dawka)
+void SQLMenager::insertIntoDawkowanie(QString &lek, QString &choroba, QString &dawka)
 {
     QSqlQuery  query(database);
     QString queryStr("INSERT INTO DAWKOWANIE VALUES ( ");
-    queryStr.append(lekKod);
+    queryStr.append(QString::number(++dawkowanieId));
     queryStr.append(" , '");
-    queryStr.append(chorobaId);
+    queryStr.append(lek);
+    queryStr.append("' , '");
+    queryStr.append(choroba);
     queryStr.append("' , '");
     queryStr.append(dawka);
     queryStr.append(" ') ;");
@@ -404,37 +428,37 @@ void SQLMenager::insertIntoWizyta(QString &id, QString &data, QString &pacjentId
     queryStr.append(lekarzId);
     queryStr.append("' , ");
     if(lekiKod.isEmpty()){
-        queryStr.append("NULL, ");
+        queryStr.append("0, ");
     } else {
         queryStr.append(" '");
         queryStr.append(chorobaId);
         queryStr.append("' , ");
     }
     if(lekiKod.isEmpty()){
-        queryStr.append(" NULL, ");
+        queryStr.append(" 0, ");
     } else {
     queryStr.append(" '");
     queryStr.append(lekiKod);
     queryStr.append("' , ");
     }
-    if(lekiKod.isEmpty()){
-        queryStr.append(" NULL, ");
+    if(lekiKod2.isEmpty()){
+        queryStr.append(" 0, ");
     } else {
         queryStr.append(" '");
         queryStr.append(lekiKod2);
         queryStr.append("' , ");
     }
 
-    if(lekiKod.isEmpty()){
-        queryStr.append(" NULL, ");
+    if(lekiKod3.isEmpty()){
+        queryStr.append(" 0, ");
     } else {
         queryStr.append(" '");
         queryStr.append(lekiKod3);
         queryStr.append("' , ");
 
     }
-    if(lekiKod.isEmpty()){
-        queryStr.append(", NULL )");
+    if(lekiKod4.isEmpty()){
+        queryStr.append(" 0 )");
     } else {
         queryStr.append(" '");
         queryStr.append(lekiKod4);
@@ -455,7 +479,7 @@ void SQLMenager::insertIntoInterakcja(QString &id, QString &lek1Id, QString &lek
     queryStr.append(lek1Id);
     queryStr.append("' , '");
     queryStr.append(lek2Id);
-    queryStr.append(" ') ;");
+    queryStr.append("') ;");
     qDebug() << "inserting with query: "<< queryStr;
 
     if (!query.exec(queryStr))
@@ -495,11 +519,13 @@ void SQLMenager::deleteFromChoroba(QString &id)
          qDebug() <<  query.lastError();
 }
 
-void SQLMenager::deleteFromDawkowanie(QString &id)
+void SQLMenager::deleteFromDawkowanie(QString &lekid, QString &chorid)
 {
     QSqlQuery query;
-    QString queryStr("DELETE FROM DAWKOWANIE WHERE ID =  ");
-    queryStr.append(id);
+    QString queryStr("DELETE FROM DAWKOWANIE WHERE LEK_KOD =  ");
+    queryStr.append(lekid);
+    queryStr.append(" AND CHOROBA_ID = ");
+    queryStr.append(chorid);
     qDebug() << queryStr;
 
     if (!query.exec(queryStr))
