@@ -56,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent) :
     modelDawkowanie = new QStandardItemModel(this);
     modelInterakcja = new QStandardItemModel(this);
     modelWizyta = new QStandardItemModel(this);
-
+    modelSerwis = new QStandardItemModel(this);
 //    tModel = new QSqlTableModel(this, db);
 
 //    tModel->setTable("PACJENT");
@@ -80,7 +80,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableView_5->setModel(modelChoroba);
     ui->tableView_4dawka->setModel(modelDawkowanie);
     ui->tableView_6wizyta->setModel(modelWizyta);
-
+    ui->tableView_11->setModel(modelSerwis);
 
 }
 
@@ -321,7 +321,8 @@ void MainWindow::on_pushButton_4_clicked() // kasuj wizytę
 
 void MainWindow::on_pushButton_3_clicked()  // dodaj wizytę
 {
-    menager.insertIntoWizyta(QString::number(++wizytaId),ui->dateEdit->text(),ui->comboBox_wizytaPacjent->currentData().toString(),ui->comboBox_wizytaLekarz->currentData().toString(),ui->comboBox_wizytaChoroba->currentData().toString(),ui->comboBox_wizytaLek->currentData().toString(),ui->comboBox_wizytaLek_2->currentData().toString(),ui->comboBox_wizytaLek_3->currentData().toString(),ui->comboBox_wizytaLek_4->currentData().toString());
+//    menager.insertIntoWizyta(QString::number(++wizytaId),ui->dateEdit->text(),ui->comboBox_wizytaPacjent->currentData().toString(),ui->comboBox_wizytaLekarz->currentData().toString(),ui->comboBox_wizytaChoroba->currentData().toString(),ui->comboBox_wizytaLek->currentData().toString(),ui->comboBox_wizytaLek_2->currentData().toString(),ui->comboBox_wizytaLek_3->currentData().toString(),ui->comboBox_wizytaLek_4->currentData().toString());
+    menager.insertIntoWizyta(QString::number(++wizytaId),ui->dateEdit->text(),ui->comboBox_wizytaPacjent->currentText(),ui->comboBox_wizytaLekarz->currentText(),ui->comboBox_wizytaChoroba->currentText(),ui->comboBox_wizytaLek->currentText(),ui->comboBox_wizytaLek_2->currentText(),ui->comboBox_wizytaLek_3->currentText(),ui->comboBox_wizytaLek_4->currentText());
     menager.setupModelWizyta(modelWizyta);
 }
 
@@ -335,4 +336,9 @@ void MainWindow::on_pushButton_KasujDawkowanie_clicked()
 {
     menager.deleteFromDawkowanie(ui->comboBox_2lekDawkowanie->currentText(),ui->comboBox_3chorobaDawkowanie->currentText());
     menager.setupModelDawkowanie(modelDawkowanie);
+}
+
+void MainWindow::on_pushButton_9_clicked()
+{
+    menager.setupModelSerwis(modelSerwis,ui->plainTextEdit->toPlainText());
 }

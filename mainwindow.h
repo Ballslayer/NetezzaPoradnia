@@ -35,6 +35,7 @@ public:
     QStandardItemModel *modelDawkowanie;
     QStandardItemModel *modelWizyta;
     QStandardItemModel *modelInterakcja;
+    QStandardItemModel *modelSerwis;
     QSqlTableModel *tModel;
 signals:
     void updateComboPacjentSig(QMap<int, QString> &);
@@ -77,6 +78,8 @@ private slots:
     void on_pushButton_DodajDawkowanie_clicked();
 
     void on_pushButton_KasujDawkowanie_clicked();
+
+    void on_pushButton_9_clicked();
 
 private:
     Ui::MainWindow *ui;

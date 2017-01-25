@@ -348,6 +348,99 @@ void SQLMenager::setupModelInterakcja(QStandardItemModel *model)
     emit updateinterakcjaId(interakcjaId);
 }
 
+void SQLMenager::setupModelSerwis(QStandardItemModel *model, QString &qStr)
+{
+    model->clear();
+    wizytaId = 0;
+    QSqlQuery query;
+     query.setForwardOnly(true);
+    // WYSWIETLANIE
+    // DODAWANIE
+
+
+    qDebug() << qStr;
+    if (!query.exec(qStr))
+         qDebug() <<  query.lastError();
+
+    QList<QStandardItem*> listaItemow0;
+    QList<QStandardItem*> listaItemow1;
+    QList<QStandardItem*> listaItemow2;
+    QList<QStandardItem*> listaItemow3;
+    QList<QStandardItem*> listaItemow4;
+    QList<QStandardItem*> listaItemow5;
+    QList<QStandardItem*> listaItemow6;
+    QList<QStandardItem*> listaItemow7;
+    QList<QStandardItem*> listaItemow8;
+    QList<QStandardItem*> listaItemow9;
+    QList<QStandardItem*> listaItemow10;
+    QStandardItem* item0;
+    QStandardItem* item1;
+    QStandardItem* item2;
+    QStandardItem* item3;
+    QStandardItem* item4;
+    QStandardItem* item5;
+    QStandardItem* item6;
+    QStandardItem* item7;
+    QStandardItem* item8;
+    QStandardItem* item9;
+    QStandardItem* item10;
+
+    while ( query.next()) {
+//         qDebug() << "----------";
+////        for(int i=0; i<5; i++){
+//            qDebug() <<  query.value(0).toString() <<  query.value(1).toString() <<  query.value(2).toString() <<  query.value(3).toString();
+////        }
+//        int kandydatNa = query.value(0).toInt();
+//        if(kandydatNa > wizytaId) wizytaId = kandydatNa;
+
+        item0 = new QStandardItem( query.value(0).toString());
+        item1 = new QStandardItem( query.value(1).toString());
+        item2 = new QStandardItem( query.value(2).toString());
+        item3 = new QStandardItem( query.value(3).toString());
+        item4 = new QStandardItem( query.value(4).toString());
+        item5 = new QStandardItem( query.value(5).toString());
+        item6 = new QStandardItem( query.value(6).toString());
+        item7 = new QStandardItem( query.value(7).toString());
+        item8 = new QStandardItem( query.value(8).toString());
+        item9 = new QStandardItem( query.value(9).toString());
+        item10 = new QStandardItem( query.value(10).toString());
+        listaItemow0.append(item0);
+        listaItemow1.append(item1);
+        listaItemow2.append(item2);
+        listaItemow3.append(item3);
+        listaItemow4.append(item4);
+        listaItemow5.append(item5);
+        listaItemow6.append(item6);
+        listaItemow7.append(item7);
+        listaItemow8.append(item8);
+        listaItemow9.append(item9);
+        listaItemow10.append(item10);
+
+
+    }
+    model->appendColumn(listaItemow0);
+    model->appendColumn(listaItemow1);
+    model->appendColumn(listaItemow2);
+    model->appendColumn(listaItemow3);
+    model->appendColumn(listaItemow4);
+    model->appendColumn(listaItemow5);
+    model->appendColumn(listaItemow6);
+    model->appendColumn(listaItemow7);
+    model->appendColumn(listaItemow8);
+    model->appendColumn(listaItemow9);
+    model->appendColumn(listaItemow10);
+//    model->setHeaderData(0, Qt::Horizontal, tr("Nr wizyty"));
+//    model->setHeaderData(1, Qt::Horizontal, tr("Data wizyty"));
+//    model->setHeaderData(2, Qt::Horizontal, tr("Pacjent"));
+//    model->setHeaderData(3, Qt::Horizontal, tr("Lekarz"));
+//    model->setHeaderData(4, Qt::Horizontal, tr("Wykryta choroba"));
+//    model->setHeaderData(5, Qt::Horizontal, tr("Przepisany lek"));
+//    model->setHeaderData(6, Qt::Horizontal, tr("drugi lek"));
+//    model->setHeaderData(7, Qt::Horizontal, tr("trzeci lek"));
+//    model->setHeaderData(8, Qt::Horizontal, tr("czwarty lek"));
+//    emit updatewizytaId(wizytaId);
+}
+
 void SQLMenager::insertIntoLekarze(QString &id, QString &name, QString &tel)
 {
     QSqlQuery  query(database);
@@ -428,21 +521,21 @@ void SQLMenager::insertIntoWizyta(QString &id, QString &data, QString &pacjentId
     queryStr.append(lekarzId);
     queryStr.append("' , ");
     if(lekiKod.isEmpty()){
-        queryStr.append("0, ");
+        queryStr.append("NULL, ");
     } else {
         queryStr.append(" '");
         queryStr.append(chorobaId);
         queryStr.append("' , ");
     }
     if(lekiKod.isEmpty()){
-        queryStr.append(" 0, ");
+        queryStr.append(" NULL, ");
     } else {
     queryStr.append(" '");
     queryStr.append(lekiKod);
     queryStr.append("' , ");
     }
     if(lekiKod2.isEmpty()){
-        queryStr.append(" 0, ");
+        queryStr.append(" NULL, ");
     } else {
         queryStr.append(" '");
         queryStr.append(lekiKod2);
@@ -450,7 +543,7 @@ void SQLMenager::insertIntoWizyta(QString &id, QString &data, QString &pacjentId
     }
 
     if(lekiKod3.isEmpty()){
-        queryStr.append(" 0, ");
+        queryStr.append(" NULL, ");
     } else {
         queryStr.append(" '");
         queryStr.append(lekiKod3);
@@ -458,7 +551,7 @@ void SQLMenager::insertIntoWizyta(QString &id, QString &data, QString &pacjentId
 
     }
     if(lekiKod4.isEmpty()){
-        queryStr.append(" 0 )");
+        queryStr.append("NULL )");
     } else {
         queryStr.append(" '");
         queryStr.append(lekiKod4);

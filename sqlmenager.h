@@ -32,6 +32,7 @@ public slots:
     void setupModelDawkowanie(QStandardItemModel *model);
     void setupModelWizyta(QStandardItemModel *model);
     void setupModelInterakcja(QStandardItemModel *model);
+    void setupModelSerwis(QStandardItemModel *model, QString &qStr);
     void insertIntoLekarze(QString &id, QString &name, QString &tel);
     void insertIntoLek(QString &code, QString &name);
     void insertIntoChoroba(QString &id, QString &nazwa, QString &opis, QString &objawy);
