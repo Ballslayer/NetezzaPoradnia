@@ -304,7 +304,7 @@ void MainWindow::on_pushButton_KasujLek_3_clicked()
 
 void MainWindow::on_pushButton_DodajChorobe_clicked()
 {
-    menager.insertIntoChoroba(QString::number(++chorobaid),ui->lineEdit_16nazwaChoroby->text(),ui->plainTextEditOpisChoroby->toPlainText(),ui->plainTextEditObjawyChoroby->toPlainText());
+    menager.insertIntoChoroba(QString::number(++chorobaid),ui->lineEdit_16nazwaChoroby->text(),ui->plainTextEditObjawyChoroby->toPlainText(),ui->plainTextEditOpisChoroby->toPlainText());
     menager.setupModelChoroba(modelChoroba);
 }
 
